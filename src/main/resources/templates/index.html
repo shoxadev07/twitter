@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="uz" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Students</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #b967ff;
+            --dark-bg: #0f0f1e;
+            --card-bg: #1a1a2e;
+            --accent: #ff2e63;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --text: #e6e6e6;
+            --text-secondary: #a0a0a0;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #16213e 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .header-section {
+            padding: 60px 0 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+
+        .student-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .student-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .student-card:hover::before {
+            left: 100%;
+        }
+
+        .student-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 243, 255, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .student-avatar::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            z-index: -1;
+            opacity: 0.7;
+            filter: blur(5px);
+        }
+
+        .student-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(0, 243, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-blue);
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-neon {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-neon:hover {
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+
+        .btn-accent {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 46, 99, 0.5);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+        }
+
+        .btn-success {
+            background: transparent;
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .btn-success:hover {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 0 20px rgba(46, 213, 115, 0.5);
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            flex: 1;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--neon-blue);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            animation: floatElement 15s infinite linear;
+        }
+
+        @keyframes floatElement {
+            0% { transform: translateY(100vh) translateX(0); }
+            100% { transform: translateY(-100px) translateX(100px); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Modal styles */
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        .confirmation-text {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .student-to-delete {
+            background: rgba(255, 71, 87, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid var(--danger);
+        }
+
+        /* Form styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            color: var(--text);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text);
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 0.2rem rgba(0, 243, 255, 0.25);
+            color: var(--text);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .add-student-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .add-student-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 243, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .student-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-neon {
+                padding: 10px 15px;
+            }
+
+            .add-student-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Floating Background Elements -->
+<div class="floating-elements" id="floatingElements"></div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title neon-text" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>O'chirishni Tasdiqlang
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-text">
+                    <p>Haqiqatan ham ushbu studentni o'chirmoqchimisiz?</p>
+                    <div class="student-to-delete">
+                        <strong id="studentToDeleteName">Student Ismi</strong>
+                        <div class="text-muted mt-1" id="studentToDeleteInfo">Qo'shimcha ma'lumot</div>
+                    </div>
+                    <p class="text-danger mt-3">
+                        <small><i class="fas fa-exclamation-circle me-1"></i>Bu amalni qaytarib bo'lmaydi!</small>
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-neon" data-bs-dismiss="modal">Bekor Qilish</button>
+                <form id="deleteForm" method="post">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>O'chirish
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title neon-text" id="addStudentModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Yangi Student Qo'shish
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addStudentForm" method="post" th:action="@{/student/add}">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Ism *</label>
+                        <input type="text" class="form-control" id="name" name="name"
+                               placeholder="Student ismini kiriting" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="surname" class="form-label">Familiya *</label>
+                        <input type="text" class="form-control" id="surname" name="surname"
+                               placeholder="Student familiyasini kiriting" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age" class="form-label">Yosh *</label>
+                        <input type="number" class="form-control" id="age" name="age"
+                               placeholder="Student yoshini kiriting" min="16" max="60" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               placeholder="student@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Telefon *</label>
+                        <input type="tel" class="form-control" id="phone" name="phone"
+                               placeholder="+998 90 123 45 67" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-neon" data-bs-dismiss="modal">Bekor Qilish</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i>Saqlash
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Header Section -->
+<div class="header-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold neon-text mb-3">Infinity Students</h1>
+                <p class="lead mb-4">No-odatiy dizayndagi studentlar boshqaruv tizimi</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="glass-card p-3 d-inline-block">
+                    <div class="stat-number" th:text="${students != null ? students.size() : 0}">0</div>
+                    <div class="stat-label">Jami Studentlar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <!-- Search Box -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search text-muted"></i>
+            <input type="text" placeholder="Studentlarni qidirish..." id="searchInput">
+            <i class="fas fa-filter text-muted" id="filterToggle"></i>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-number" id="totalStudents">0</div>
+            <div class="stat-label">Jami Studentlar</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="averageAge">0</div>
+            <div class="stat-label">O'rtacha Yosh</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="activeStudents">0</div>
+            <div class="stat-label">Faol Studentlar</div>
+        </div>
+    </div>
+
+    <!-- Students Grid -->
+    <div class="student-grid" th:if="${not #lists.isEmpty(students)}">
+        <div th:each="student : ${students}" class="student-card" th:if="${student != null}">
+            <div class="student-avatar"
+                 th:text="${(student.name != null ? #strings.substring(student.name, 0, 1) : '') +
+                          (student.surname != null ? #strings.substring(student.surname, 0, 1) : '')}">
+                AA
+            </div>
+
+            <h3 class="student-name"
+                th:text="${(student.name != null ? student.name : '') + ' ' + (student.surname != null ? student.surname : '')}">
+                Ali Aliyev
+            </h3>
+
+            <div class="student-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">ID</div>
+                        <div class="info-value" th:text="${student.id != null ? student.id : 'N/A'}">ST001</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-birthday-cake"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Yosh</div>
+                        <div class="info-value" th:text="${student.age != null ? student.age + ' yosh' : 'N/A'}">22 yosh</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Email</div>
+                        <div class="info-value" th:text="${student.email != null ? student.email : 'Mavjud emas'}">ali@example.com</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Telefon</div>
+                        <div class="info-value" th:text="${student.phone != null ? student.phone : 'Mavjud emas'}">+998 90 123 45 67</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a th:href="@{'/student/' + ${student.id}}" class="btn-neon">
+                    <i class="fas fa-eye"></i> Ko'rish
+                </a>
+               <!-- <a href="#" class="btn-neon btn-accent">
+                    <i class="fas fa-edit"></i> Tahrirlash
+                </a>-->
+                <button class="btn-neon btn-danger delete-btn"
+                        th:if="${student.id != null}"
+                        th:attr="data-id=${student.id},
+                                 data-name=${(student.name != null ? student.name : '') + ' ' + (student.surname != null ? student.surname : '')},
+                                 data-info=${'ID: ' + (student.id != null ? student.id : '') + ', Yosh: ' + (student.age != null ? student.age : '')}">
+                    <i class="fas fa-trash"></i> O'chirish
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${#lists.isEmpty(students)}">
+        <div class="empty-icon">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        <h3 class="neon-text mb-3">Studentlar topilmadi</h3>
+        <p class="text-muted mb-4">Hozircha hech qanday student ro'yxatdan o'tmagan</p>
+        <button class="btn-neon" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+            <i class="fas fa-plus"></i> Birinchi Studentni Qo'shing
+        </button>
+    </div>
+</div>
+
+<!-- Add Student Floating Button -->
+<button class="add-student-btn" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+    <i class="fas fa-plus"></i>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Floating elements creation
+    function createFloatingElements() {
+        const container = document.getElementById('floatingElements');
+        for (let i = 0; i < 50; i++) {
+            const element = document.createElement('div');
+            element.className = 'floating-element';
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.animationDelay = Math.random() * 15 + 's';
+            element.style.animationDuration = (15 + Math.random() * 10) + 's';
+            container.appendChild(element);
+        }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.student-card');
+
+        cards.forEach(card => {
+            const name = card.querySelector('.student-name').textContent.toLowerCase();
+            const email = card.querySelectorAll('.info-value')[2]?.textContent.toLowerCase();
+
+            if (name.includes(searchTerm) || (email && email.includes(searchTerm))) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        updateStats();
+    });
+
+    // Update stats
+    function updateStats() {
+        const students = document.querySelectorAll('.student-card');
+        const totalStudents = students.length;
+        const visibleStudents = Array.from(students).filter(card =>
+            card.style.display !== 'none'
+        ).length;
+
+        let totalAge = 0;
+        let ageCount = 0;
+
+        students.forEach(card => {
+            if (card.style.display !== 'none') {
+                const ageText = card.querySelectorAll('.info-value')[1]?.textContent;
+                if (ageText) {
+                    const age = parseInt(ageText);
+                    if (!isNaN(age)) {
+                        totalAge += age;
+                        ageCount++;
+                    }
+                }
+            }
+        });
+
+        document.getElementById('totalStudents').textContent = totalStudents;
+        document.getElementById('activeStudents').textContent = visibleStudents;
+        document.getElementById('averageAge').textContent = ageCount > 0 ?
+            Math.round(totalAge / ageCount) : 0;
+    }
+
+    // Delete functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        createFloatingElements();
+        updateStats();
+
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const deleteForm = document.getElementById('deleteForm');
+
+        // Delete button click handler
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const studentId = this.getAttribute('data-id');
+                const studentName = this.getAttribute('data-name');
+                const studentInfo = this.getAttribute('data-info');
+
+                // Update modal content
+                document.getElementById('studentToDeleteName').textContent = studentName;
+                document.getElementById('studentToDeleteInfo').textContent = studentInfo;
+
+                // Update form action
+                deleteForm.action = `/student/delete/${studentId}`;
+
+                // Show modal
+                deleteModal.show();
+            });
+        });
+
+        // Add Student Form validation
+        const addStudentForm = document.getElementById('addStudentForm');
+        addStudentForm.addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const age = document.getElementById('age').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!name || !surname || !age || !phone) {
+                e.preventDefault();
+                alert('Iltimos, barcha majburiy maydonlarni to\'ldiring!');
+                return;
+            }
+
+            if (age < 16 || age > 60) {
+                e.preventDefault();
+                alert('Yosh 16 dan 60 gacha bo\'lishi kerak!');
+                return;
+            }
+        });
+
+        // Update stats when searching
+        document.getElementById('searchInput').addEventListener('input', updateStats);
+    });
+
+    // Success message for deletion
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('deleted') === 'true') {
+        showToast('Student muvaffaqiyatli o\'chirildi', 'success');
+    }
+    if (urlParams.get('added') === 'true') {
+        showToast('Yangi student muvaffaqiyatli qo\'shildi', 'success');
+    }
+
+    function showToast(message, type) {
+        setTimeout(() => {
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed top-0 end-0 p-3';
+            toast.style.zIndex = '9999';
+
+            const bgColor = type === 'success' ? 'var(--success)' : 'var(--danger)';
+
+            toast.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header" style="background: ${bgColor}; color: white;">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                        <strong class="me-auto">${type === 'success' ? 'Muvaffaqiyatli' : 'Xatolik'}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body" style="background: var(--card-bg); color: var(--text);">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }, 100);
+    }
+</script>
+</body>
+</html>

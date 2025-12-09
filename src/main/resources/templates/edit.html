@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="uz" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Tahrirlash - ' + ${student?.name + ' ' + student?.surname}">Student Tahrirlash</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-blue: #00f3ff;
+            --cosmic-purple: #b967ff;
+            --cosmic-pink: #ff2e63;
+            --cosmic-orange: #ff6b35;
+            --cosmic-green: #00ff88;
+            --dark-space: #0a0a1a;
+            --nebula-bg: #1a1a2e;
+            --star-light: #e6e6e6;
+            --star-dust: #a0a0a0;
+            --black-hole: #000000;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-space) 0%, #16213e 50%, #0f3460 100%);
+            color: var(--star-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Kosmik fon effektlari */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background:
+                    radial-gradient(circle at 20% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(185, 103, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(255, 46, 99, 0.05) 0%, transparent 50%);
+            animation: nebulaFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes nebulaFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-10px, 10px) scale(1.02); }
+            50% { transform: translate(5px, -5px) scale(0.98); }
+            75% { transform: translate(10px, 5px) scale(1.01); }
+        }
+
+        /* Yulduzlar */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Navigation */
+        .cosmic-nav {
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 15px 0;
+        }
+
+        .nav-brand {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--cosmic-blue), var(--cosmic-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--cosmic-blue);
+            color: var(--cosmic-blue);
+            padding: 8px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: var(--cosmic-blue);
+            color: var(--dark-space);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+
+        /* Main Content */
+        .edit-hero {
+            padding: 60px 0 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--cosmic-blue) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.1;
+            animation: orbFloat 15s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .hero-orb:nth-child(1) {
+            top: -150px;
+            left: -150px;
+            background: radial-gradient(circle, var(--cosmic-purple) 0%, transparent 70%);
+        }
+
+        .hero-orb:nth-child(2) {
+            bottom: -150px;
+            right: -150px;
+            background: radial-gradient(circle, var(--cosmic-pink) 0%, transparent 70%);
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        /* Edit Form */
+        .edit-form-container {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                    from 0deg,
+                    transparent,
+                    rgba(0, 243, 255, 0.1),
+                    rgba(185, 103, 255, 0.1),
+                    rgba(255, 46, 99, 0.1),
+                    transparent
+            );
+            animation: rotateGlow 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--cosmic-blue), var(--cosmic-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            color: var(--star-dust);
+            font-size: 16px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            color: var(--star-light);
+            margin-bottom: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--cosmic-blue);
+            width: 20px;
+        }
+
+        .required::after {
+            content: '*';
+            color: var(--cosmic-pink);
+            margin-left: 4px;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--star-light);
+            padding: 12px 15px;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--cosmic-blue);
+            box-shadow: 0 0 0 0.2rem rgba(0, 243, 255, 0.25);
+            color: var(--star-light);
+        }
+
+        .form-control::placeholder {
+            color: var(--star-dust);
+        }
+
+        .form-control:disabled {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: var(--star-dust);
+        }
+
+        /* Input Groups */
+        .input-group {
+            position: relative;
+        }
+
+        .input-group-text {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: none;
+            color: var(--cosmic-blue);
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+
+        .input-group .form-control:focus {
+            border-left: none;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--cosmic-blue);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--cosmic-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 18px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .cosmic-btn {
+            background: transparent;
+            border: 2px solid;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .cosmic-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cosmic-btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            border-color: var(--cosmic-blue);
+            color: var(--cosmic-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--cosmic-blue);
+            color: var(--dark-space);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
+        }
+
+        .btn-success {
+            border-color: var(--cosmic-green);
+            color: var(--cosmic-green);
+        }
+
+        .btn-success:hover {
+            background: var(--cosmic-green);
+            color: var(--dark-space);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .btn-warning {
+            border-color: var(--cosmic-orange);
+            color: var(--cosmic-orange);
+        }
+
+        .btn-warning:hover {
+            background: var(--cosmic-orange);
+            color: white;
+            box-shadow: 0 0 25px rgba(255, 107, 53, 0.5);
+        }
+
+        .btn-danger {
+            border-color: var(--cosmic-pink);
+            color: var(--cosmic-pink);
+        }
+
+        .btn-danger:hover {
+            background: var(--cosmic-pink);
+            color: white;
+            box-shadow: 0 0 25px rgba(255, 46, 99, 0.5);
+        }
+
+        /* Form Validation */
+        .is-invalid {
+            border-color: var(--cosmic-pink) !important;
+        }
+
+        .invalid-feedback {
+            color: var(--cosmic-pink);
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .is-valid {
+            border-color: var(--cosmic-green) !important;
+        }
+
+        /* Preview Card */
+        .preview-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .preview-card:hover {
+            border-color: var(--cosmic-blue);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .preview-title {
+            font-size: 16px;
+            color: var(--cosmic-blue);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-content {
+            font-size: 14px;
+            color: var(--star-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .edit-hero {
+                padding: 40px 0 20px;
+            }
+
+            .edit-form-container {
+                padding: 25px;
+                margin: 0 15px;
+            }
+
+            .form-title {
+                font-size: 28px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cosmic-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Kosmik Fon Effektlari -->
+<div class="cosmic-bg"></div>
+<div class="stars" id="starsContainer"></div>
+
+<!-- Navigation -->
+<nav class="cosmic-nav">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <a th:href="@{/}" class="nav-brand">
+                    <i class="fas fa-infinity me-2"></i>Infinity Students
+                </a>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a th:href="@{'/student/' + ${student?.id}}" class="back-btn">
+                    <i class="fas fa-arrow-left me-1"></i> Orqaga
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container" th:if="${student != null}">
+    <div class="edit-hero">
+        <div class="hero-orb"></div>
+        <div class="hero-orb"></div>
+
+        <div class="edit-form-container">
+            <div class="form-glow"></div>
+
+            <div class="form-header">
+                <h1 class="form-title">
+                    <i class="fas fa-edit me-2"></i>
+                    Student Ma'lumotlarini Tahrirlash
+                </h1>
+                <p class="form-subtitle">
+                    "<span th:text="${student.name + ' ' + student.surname}">Ali Aliyev</span>" ma'lumotlarini yangilang
+                </p>
+            </div>
+
+            <form th:action="@{'/student/edit/' + ${student.id}}" method="post" id="editForm">
+                <input type="hidden" name="_method" value="put">
+
+                <!-- Asosiy Ma'lumotlar -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user-astronaut"></i>
+                        Asosiy Ma'lumotlar
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name" class="form-label required">
+                                    <i class="fas fa-signature"></i>
+                                    Ism
+                                </label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       th:value="${student.name}"
+                                       placeholder="Student ismini kiriting" required>
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Ism maydoni to'ldirilishi shart
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="surname" class="form-label required">
+                                    <i class="fas fa-text-height"></i>
+                                    Familiya
+                                </label>
+                                <input type="text" class="form-control" id="surname" name="surname"
+                                       th:value="${student.surname}"
+                                       placeholder="Student familiyasini kiriting" required>
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Familiya maydoni to'ldirilishi shart
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="age" class="form-label required">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    Yosh
+                                </label>
+                                <input type="number" class="form-control" id="age" name="age"
+                                       th:value="${student.age}"
+                                       placeholder="Student yoshini kiriting" min="16" max="60" required>
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Yosh 16 dan 60 gacha bo'lishi kerak
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phone" class="form-label required">
+                                    <i class="fas fa-phone"></i>
+                                    Telefon
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+998</span>
+                                    <input type="tel" class="form-control" id="phone" name="phone"
+                                           th:value="${#strings.substring(student.phone, 5)}"
+                                           placeholder="90 123 45 67">
+                                </div>
+                                <div class="invalid-feedback">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Telefon raqami to'g'ri formatda bo'lishi kerak
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Qo'shimcha Ma'lumotlar -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Qo'shimcha Ma'lumotlar
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               th:value="${student.email}"
+                               placeholder="student@example.com">
+                        <div class="invalid-feedback">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Email to'g'ri formatda bo'lishi kerak
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="preview-card">
+                        <div class="preview-title">
+                            <i class="fas fa-eye"></i>
+                            Ko'rib chiqish
+                        </div>
+                        <div class="preview-content">
+                            <strong>To'liq ism:</strong> <span id="previewName" th:text="${student.name + ' ' + student.surname}">Ali Aliyev</span><br>
+                            <strong>Yosh:</strong> <span id="previewAge" th:text="${student.age}">22</span> yosh<br>
+                            <strong>Telefon:</strong> +998 <span id="previewPhone" th:text="${#strings.substring(student.phone, 5)}">90 123 45 67</span><br>
+                            <strong>Email:</strong> <span id="previewEmail" th:text="${student.email ?: 'Mavjud emas'}">ali@example.com</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="cosmic-btn btn-success">
+                        <i class="fas fa-save"></i> Yangilash
+                    </button>
+                    <a th:href="@{'/student/' + ${student.id}}" class="cosmic-btn btn-warning">
+                        <i class="fas fa-times"></i> Bekor Qilish
+                    </a>
+                    <a th:href="@{/}" class="cosmic-btn btn-primary">
+                        <i class="fas fa-home"></i> Bosh Sahifa
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Student topilmaganda -->
+<div class="container" th:if="${student == null}">
+    <div class="edit-hero text-center">
+        <div class="edit-form-container">
+            <div class="form-glow"></div>
+            <div class="form-header">
+                <h1 class="form-title text-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Student Topilmadi
+                </h1>
+                <p class="form-subtitle">So'ralgan student ma'lumotlari mavjud emas</p>
+            </div>
+            <div class="action-buttons">
+                <a th:href="@{/}" class="cosmic-btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Bosh Sahifaga Qaytish
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Yulduzlarni yaratish
+    function createStars() {
+        const container = document.getElementById('starsContainer');
+        const starCount = 200;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+
+            const size = Math.random() * 3 + 1;
+            const left = Math.random() * 100;
+            const top = Math.random() * 100;
+            const delay = Math.random() * 4;
+            const duration = 2 + Math.random() * 3;
+
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${left}%`;
+            star.style.top = `${top}%`;
+            star.style.animationDelay = `${delay}s`;
+            star.style.animationDuration = `${duration}s`;
+
+            container.appendChild(star);
+        }
+    }
+
+    // Real-time preview yangilash
+    function updatePreview() {
+        const name = document.getElementById('name').value || 'Ism';
+        const surname = document.getElementById('surname').value || 'Familiya';
+        const age = document.getElementById('age').value || '0';
+        const phone = document.getElementById('phone').value || '00 000 00 00';
+        const email = document.getElementById('email').value || 'Mavjud emas';
+
+        document.getElementById('previewName').textContent = name + ' ' + surname;
+        document.getElementById('previewAge').textContent = age;
+        document.getElementById('previewPhone').textContent = phone;
+        document.getElementById('previewEmail').textContent = email || 'Mavjud emas';
+    }
+
+    // Form validatsiyasi
+    function validateForm() {
+        const form = document.getElementById('editForm');
+        const inputs = form.querySelectorAll('input[required]');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            }
+        });
+
+        // Telefon raqami validatsiyasi
+        const phoneInput = document.getElementById('phone');
+        //const phonePattern = /^[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$/;
+        if (phoneInput.value) {
+            phoneInput.classList.add('is-invalid');
+            isValid = true;
+        }
+
+        // Email validatsiyasi
+        const emailInput = document.getElementById('email');
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailInput.value && !emailPattern.test(emailInput.value)) {
+            emailInput.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Sahifa yuklanganda
+    document.addEventListener('DOMContentLoaded', function() {
+        createStars();
+
+        // Real-time preview
+        const formInputs = document.querySelectorAll('#editForm input');
+        formInputs.forEach(input => {
+            input.addEventListener('input', updatePreview);
+        });
+
+        // Form yuborish
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+
+                // Xato xabari
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed top-0 end-0 p-3';
+                toast.style.zIndex = '9999';
+                toast.innerHTML = `
+                        <div class="toast show" role="alert">
+                            <div class="toast-header" style="background: var(--cosmic-pink); color: white;">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <strong class="me-auto">Xatolik</strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                            </div>
+                            <div class="toast-body" style="background: var(--nebula-bg); color: var(--star-light);">
+                                Iltimos, barcha maydonlarni to'g'ri to'ldiring
+                            </div>
+                        </div>
+                    `;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        });
+
+        // Parallax effekt
+        document.addEventListener('mousemove', function(e) {
+            const stars = document.querySelector('.stars');
+            const cosmicBg = document.querySelector('.cosmic-bg');
+
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            stars.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+            cosmicBg.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+        });
+    });
+
+    // Telefon formati
+    document.getElementById('phone')?.addEventListener('input', function(e) {
+        e.target.value = value;
+    });
+</script>
+</body>
+</html>
