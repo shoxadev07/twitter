@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: spring-boot-infinity
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        format_sql: true
+
+springdoc:
+  swagger-ui:
+    path: /docs
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
