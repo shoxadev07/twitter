@@ -43,6 +43,16 @@ public class User {
     @Column(name = "bio")
     private String bio;
 
+    @Column(name = "token")
+    private String token;
+
+    @Column(name = "state", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private State state;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
