@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.exception;
+package springbootinfinity.exception;
 
 public class ConflictException extends RuntimeException{
     public ConflictException(String message) {

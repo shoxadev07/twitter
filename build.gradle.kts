@@ -24,11 +24,23 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
+    //Redis client
+    implementation("redis.clients:jedis:7.0.0")
+
+    //Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+
     // OpenAPI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
     // Lombok
     implementation("org.projectlombok:lombok")
+
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    //Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     annotationProcessor("org.projectlombok:lombok")
 
     // Database

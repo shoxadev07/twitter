@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.config.security;
+package springbootinfinity.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uz.salikhdev.springbootinfinity.repositroy.UserRepository;
+import springbootinfinity.repositroy.UserRepository;
 
 import java.io.IOException;
 

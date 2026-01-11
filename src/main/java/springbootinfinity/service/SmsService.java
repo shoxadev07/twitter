@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.service;
+package springbootinfinity.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.entity;
+package springbootinfinity.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

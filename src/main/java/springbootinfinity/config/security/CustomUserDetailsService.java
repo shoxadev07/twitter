@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.config.security;
+package springbootinfinity.config.security;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import uz.salikhdev.springbootinfinity.entity.User;
-import uz.salikhdev.springbootinfinity.repositroy.UserRepository;
+import springbootinfinity.entity.User;
+import springbootinfinity.repositroy.UserRepository;
 
 @Service
 @RequiredArgsConstructor

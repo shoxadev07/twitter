@@ -1,17 +1,18 @@
-package uz.salikhdev.springbootinfinity.service;
+package springbootinfinity.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.salikhdev.springbootinfinity.dto.request.LoginRequest;
-import uz.salikhdev.springbootinfinity.dto.request.RegisterRequest;
-import uz.salikhdev.springbootinfinity.dto.request.VerifyRequest;
-import uz.salikhdev.springbootinfinity.dto.response.LoginResponse;
-import uz.salikhdev.springbootinfinity.entity.Role;
-import uz.salikhdev.springbootinfinity.entity.State;
-import uz.salikhdev.springbootinfinity.entity.User;
-import uz.salikhdev.springbootinfinity.repositroy.UserRepository;
+import springbootinfinity.dto.request.LoginRequest;
+import springbootinfinity.dto.request.RegisterRequest;
+import springbootinfinity.dto.request.VerifyRequest;
+import springbootinfinity.dto.response.LoginResponse;
+import springbootinfinity.entity.Role;
+import springbootinfinity.entity.State;
+import springbootinfinity.entity.User;
+import springbootinfinity.repositroy.UserRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,18 +24,21 @@ public class AuthService {
     private final SmsService smsService;
 
     public void registration(RegisterRequest request) {
-        userRepository.findByPhoneNumber(request.phoneNumber())
-                .ifPresent(user -> {
+        Optional<User> optUSer = userRepository.findByPhoneNumber(request.phoneNumber());
+        if (optUSer.isPresent()) {
+            User user = optUSer.get();
+            if (user.getState().equals(State.UNVERIFIED)) {
+                smsService.sendOtp(request.phoneNumber());
+               return;
+            } else {
+                throw new RuntimeException("User already exists");
+            }
+        }
 
-                    if (user.getState().equals(State.UNVERIFIED)) {
-                       smsService.sendOtp(request.phoneNumber());
-
-                    } else {
-                        throw new RuntimeException("User already exists");
-                    }
 
 
-                });
+
+
 
         User user = User.builder()
                 .lastName(request.lastName())

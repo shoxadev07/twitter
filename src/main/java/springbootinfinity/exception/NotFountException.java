@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.exception;
+package springbootinfinity.exception;
 
 public class NotFountException extends RuntimeException {
     public NotFountException(String message) {

@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.controller;
+package springbootinfinity.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uz.salikhdev.springbootinfinity.dto.request.LoginRequest;
-import uz.salikhdev.springbootinfinity.dto.request.RegisterRequest;
-import uz.salikhdev.springbootinfinity.dto.request.VerifyRequest;
-import uz.salikhdev.springbootinfinity.dto.response.LoginResponse;
-import uz.salikhdev.springbootinfinity.dto.response.SuccessResponse;
-import uz.salikhdev.springbootinfinity.service.AuthService;
+import springbootinfinity.dto.request.LoginRequest;
+import springbootinfinity.dto.request.RegisterRequest;
+import springbootinfinity.dto.request.VerifyRequest;
+import springbootinfinity.dto.response.LoginResponse;
+import springbootinfinity.dto.response.SuccessResponse;
+import springbootinfinity.service.AuthService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -32,18 +32,9 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-   @PostMapping("/verify")
+    @PostMapping("/verify")
     public ResponseEntity<?> verify(@RequestBody VerifyRequest request) {
         authService.verify(request);
         return ResponseEntity.ok(SuccessResponse.created("User verified successfully."));
-   }
-
-
-
-
-
-
-
-
-
+    }
 }

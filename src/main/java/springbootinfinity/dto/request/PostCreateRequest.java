@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.dto.request;
+package springbootinfinity.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;

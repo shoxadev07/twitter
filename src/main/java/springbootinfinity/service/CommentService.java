@@ -1,17 +1,17 @@
-package uz.salikhdev.springbootinfinity.service;
+package springbootinfinity.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uz.salikhdev.springbootinfinity.dto.request.CommentCreateRequest;
-import uz.salikhdev.springbootinfinity.dto.response.CommentResponse;
-import uz.salikhdev.springbootinfinity.dto.response.UserResponse;
-import uz.salikhdev.springbootinfinity.entity.Comment;
-import uz.salikhdev.springbootinfinity.entity.Post;
-import uz.salikhdev.springbootinfinity.entity.User;
-import uz.salikhdev.springbootinfinity.exception.NotFountException;
-import uz.salikhdev.springbootinfinity.repositroy.CommentRepository;
-import uz.salikhdev.springbootinfinity.repositroy.PostRepository;
-import uz.salikhdev.springbootinfinity.repositroy.UserRepository;
+import springbootinfinity.dto.request.CommentCreateRequest;
+import springbootinfinity.dto.response.CommentResponse;
+import springbootinfinity.dto.response.UserResponse;
+import springbootinfinity.entity.Comment;
+import springbootinfinity.entity.Post;
+import springbootinfinity.entity.User;
+import springbootinfinity.exception.NotFountException;
+import springbootinfinity.repositroy.CommentRepository;
+import springbootinfinity.repositroy.PostRepository;
+import springbootinfinity.repositroy.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

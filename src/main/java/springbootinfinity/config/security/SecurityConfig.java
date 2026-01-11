@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.config.security;
+package springbootinfinity.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,19 +1,19 @@
-package uz.salikhdev.springbootinfinity.service;
+package springbootinfinity.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uz.salikhdev.springbootinfinity.dto.request.PostCreateRequest;
-import uz.salikhdev.springbootinfinity.dto.request.PostUpdateRequest;
-import uz.salikhdev.springbootinfinity.dto.response.PostResponse;
-import uz.salikhdev.springbootinfinity.dto.response.UserResponse;
-import uz.salikhdev.springbootinfinity.entity.Community;
-import uz.salikhdev.springbootinfinity.entity.Post;
-import uz.salikhdev.springbootinfinity.entity.User;
-import uz.salikhdev.springbootinfinity.exception.ConflictException;
-import uz.salikhdev.springbootinfinity.exception.NotFountException;
-import uz.salikhdev.springbootinfinity.repositroy.CommunityRepository;
-import uz.salikhdev.springbootinfinity.repositroy.PostRepository;
-import uz.salikhdev.springbootinfinity.repositroy.UserRepository;
+import springbootinfinity.dto.request.PostCreateRequest;
+import springbootinfinity.dto.request.PostUpdateRequest;
+import springbootinfinity.dto.response.PostResponse;
+import springbootinfinity.dto.response.UserResponse;
+import springbootinfinity.entity.Community;
+import springbootinfinity.entity.Post;
+import springbootinfinity.entity.User;
+import springbootinfinity.exception.ConflictException;
+import springbootinfinity.exception.NotFountException;
+import springbootinfinity.repositroy.CommunityRepository;
+import springbootinfinity.repositroy.PostRepository;
+import springbootinfinity.repositroy.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
-package uz.salikhdev.springbootinfinity.exception;
+package springbootinfinity.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import uz.salikhdev.springbootinfinity.dto.response.ErrorResponse;
+import springbootinfinity.dto.response.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

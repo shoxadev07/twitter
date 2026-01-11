@@ -1,8 +1,8 @@
-package uz.salikhdev.springbootinfinity.repositroy;
+package springbootinfinity.repositroy;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import uz.salikhdev.springbootinfinity.entity.Comment;
+import springbootinfinity.entity.Comment;
 
 import java.util.List;
 

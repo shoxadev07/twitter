@@ -1,14 +1,14 @@
-package uz.salikhdev.springbootinfinity.controller;
+package springbootinfinity.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.salikhdev.springbootinfinity.dto.request.PostCreateRequest;
-import uz.salikhdev.springbootinfinity.dto.request.PostUpdateRequest;
-import uz.salikhdev.springbootinfinity.dto.response.SuccessResponse;
-import uz.salikhdev.springbootinfinity.service.PostService;
+import springbootinfinity.dto.request.PostCreateRequest;
+import springbootinfinity.dto.request.PostUpdateRequest;
+import springbootinfinity.dto.response.SuccessResponse;
+import springbootinfinity.service.PostService;
 
 @RestController
 @RequestMapping("/api/v1/posts")

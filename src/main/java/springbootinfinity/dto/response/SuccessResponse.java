@@ -1,4 +1,4 @@
-package uz.salikhdev.springbootinfinity.dto.response;
+package springbootinfinity.dto.response;
 
 import lombok.Builder;
 
