@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.salikhdev.springbootinfinity.dto.request.LoginRequest;
 import uz.salikhdev.springbootinfinity.dto.request.RegisterRequest;
+import uz.salikhdev.springbootinfinity.dto.request.VerifyRequest;
 import uz.salikhdev.springbootinfinity.dto.response.LoginResponse;
 import uz.salikhdev.springbootinfinity.dto.response.SuccessResponse;
 import uz.salikhdev.springbootinfinity.service.AuthService;
@@ -30,4 +31,19 @@ public class AuthController {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
+
+   @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody VerifyRequest request) {
+        authService.verify(request);
+        return ResponseEntity.ok(SuccessResponse.created("User verified successfully."));
+   }
+
+
+
+
+
+
+
+
+
 }

@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.salikhdev.springbootinfinity.dto.request.LoginRequest;
 import uz.salikhdev.springbootinfinity.dto.request.RegisterRequest;
+import uz.salikhdev.springbootinfinity.dto.request.VerifyRequest;
 import uz.salikhdev.springbootinfinity.dto.response.LoginResponse;
 import uz.salikhdev.springbootinfinity.entity.Role;
 import uz.salikhdev.springbootinfinity.entity.State;
@@ -19,14 +20,15 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SmsService smsService;
 
     public void registration(RegisterRequest request) {
         userRepository.findByPhoneNumber(request.phoneNumber())
                 .ifPresent(user -> {
 
                     if (user.getState().equals(State.UNVERIFIED)) {
-                        // resend code
-                        // TODO : sms jo'natamiz.
+                       smsService.sendOtp(request.phoneNumber());
+
                     } else {
                         throw new RuntimeException("User already exists");
                     }
@@ -47,6 +49,7 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+        smsService.sendOtp(request.phoneNumber());
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -72,4 +75,22 @@ public class AuthService {
                 .token(token)
                 .build();
     }
+
+   public void verify(VerifyRequest request) {
+
+      User user = userRepository.findByPhoneNumber(request.phoneNumber())
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+       boolean isSucces = smsService.verifyOtp(request.phoneNumber(), request.otp());
+       if (!isSucces) {
+        throw new RuntimeException("Verification failed");
+    }
+       user.setState(State.ACTIVE);
+       userRepository.save(user);
+
+
+    }
+
+
+
 }
